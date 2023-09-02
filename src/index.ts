@@ -11,127 +11,127 @@ async function importConf() {
 export async function createStore(cwd: string) {
 
     await importConf();
-
-    const defaults = {
-        'connection.host': await getInternalIP() || '192.168.1.1'
-    }
+    const schema = await getSchema();
 
     return new Conf({
         configName: 'storage',
         schema,
-        defaults,
         migrations,
         cwd,
         projectVersion: '1.0.0'
     });
 }
 
-const schema = {
-    connection: {
-        type: 'object',
-        properties: {
-            host: {
-                type: 'string',
-                default: ''
-            },
-            port: {
-                type: 'number',
-                default: 8081
-            },
-            webSocketPort: {
-                type: 'number',
-                default: 41312
-            },
-            password: {
-                type: 'string',
-                default: '1234'
-            }
-        }
-    },
-    mango: {
-        type: 'object',
-        properties: {
-            apiKey: {
-                type: 'string',
-                default: ''
-            },
-            apiSalt: {
-                type: 'string',
-                default: ''
-            }
-        }
-    },
-    preferences: {
-        type: 'object',
-        properties: {
-            showRegionOperator: {
-                type: 'boolean',
-                default: false
-            },
-            logMode: {
-                type: 'number',
-                default: 1
-            }
-        }
-    },
-    http1c: {
-        type: 'object',
-        properties: {
-            use: {
-                type: 'boolean',
-                default: false
-            },
-            connectionString: {
-                type: 'string',
-                default: ''
-            },
-            userName: {
-                type: 'string',
-                default: ''
-            },
-            password: {
-                type: 'string',
-                default: ''
-            }
-        }
-    },
-    comConnection: {
-        type: 'object',
-        properties: {
-            use: {
-                type: 'boolean',
-                default: false
-            },
-            connectionString: {
-                type: 'string',
-                default: ''
-            }
-        }
-    },
-    lines: {
-        type: 'array',
-        items: {
+async function getSchema() {
+    return {
+        connection: {
             type: 'object',
             properties: {
-                lineNumber: {
-                    type: 'string'
+                host: {
+                    type: 'string',
+                    default: await getInternalIP() || '192.168.1.1',
                 },
-                login: {
-                    type: 'string'
+                port: {
+                    type: 'number',
+                    default: 8081
+                },
+                webSocketPort: {
+                    type: 'number',
+                    default: 8082
                 },
                 password: {
-                    type: 'string'
+                    type: 'string',
+                    default: '1234'
+                }
+            }
+        },
+        mango: {
+            type: 'object',
+            properties: {
+                apiKey: {
+                    type: 'string',
+                    default: ''
                 },
-                guid: {
-                    type: 'string'
+                apiSalt: {
+                    type: 'string',
+                    default: ''
+                }
+            }
+        },
+        preferences: {
+            type: 'object',
+            properties: {
+                showRegionOperator: {
+                    type: 'boolean',
+                    default: false
                 },
-                number: {
-                    type: 'string'
+                logMode: {
+                    type: 'number',
+                    default: 1
+                }
+            }
+        },
+        http1c: {
+            type: 'object',
+            properties: {
+                use: {
+                    type: 'boolean',
+                    default: false
+                },
+                connectionString: {
+                    type: 'string',
+                    default: ''
+                },
+                userName: {
+                    type: 'string',
+                    default: ''
+                },
+                password: {
+                    type: 'string',
+                    default: ''
+                }
+            }
+        },
+        comConnection: {
+            type: 'object',
+            properties: {
+                use: {
+                    type: 'boolean',
+                    default: false
+                },
+                connectionString: {
+                    type: 'string',
+                    default: ''
+                }
+            }
+        },
+        lines: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    lineNumber: {
+                        type: 'string'
+                    },
+                    login: {
+                        type: 'string'
+                    },
+                    password: {
+                        type: 'string'
+                    },
+                    guid: {
+                        type: 'string'
+                    },
+                    number: {
+                        type: 'string'
+                    }
                 }
             }
         }
     }
-};
+}
+
+
 
 const migrations = {
     //migration to new schema

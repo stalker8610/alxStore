@@ -18,6 +18,7 @@ function importConf() {
 export function createStore(cwd) {
     return __awaiter(this, void 0, void 0, function* () {
         yield importConf();
+        const schema = yield getSchema();
         return new Conf({
             configName: 'storage',
             schema,
@@ -27,112 +28,116 @@ export function createStore(cwd) {
         });
     });
 }
-const schema = {
-    connection: {
-        type: 'object',
-        properties: {
-            host: {
-                type: 'string',
-                default: ''
+function getSchema() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return {
+            connection: {
+                type: 'object',
+                properties: {
+                    host: {
+                        type: 'string',
+                        default: (yield getInternalIP()) || '192.168.1.1',
+                    },
+                    port: {
+                        type: 'number',
+                        default: 8081
+                    },
+                    webSocketPort: {
+                        type: 'number',
+                        default: 8082
+                    },
+                    password: {
+                        type: 'string',
+                        default: '1234'
+                    }
+                }
             },
-            port: {
-                type: 'number',
-                default: 8081
+            mango: {
+                type: 'object',
+                properties: {
+                    apiKey: {
+                        type: 'string',
+                        default: ''
+                    },
+                    apiSalt: {
+                        type: 'string',
+                        default: ''
+                    }
+                }
             },
-            webSocketPort: {
-                type: 'number',
-                default: 41312
+            preferences: {
+                type: 'object',
+                properties: {
+                    showRegionOperator: {
+                        type: 'boolean',
+                        default: false
+                    },
+                    logMode: {
+                        type: 'number',
+                        default: 1
+                    }
+                }
             },
-            password: {
-                type: 'string',
-                default: '1234'
-            }
-        }
-    },
-    mango: {
-        type: 'object',
-        properties: {
-            apiKey: {
-                type: 'string',
-                default: ''
+            http1c: {
+                type: 'object',
+                properties: {
+                    use: {
+                        type: 'boolean',
+                        default: false
+                    },
+                    connectionString: {
+                        type: 'string',
+                        default: ''
+                    },
+                    userName: {
+                        type: 'string',
+                        default: ''
+                    },
+                    password: {
+                        type: 'string',
+                        default: ''
+                    }
+                }
             },
-            apiSalt: {
-                type: 'string',
-                default: ''
-            }
-        }
-    },
-    preferences: {
-        type: 'object',
-        properties: {
-            showRegionOperator: {
-                type: 'boolean',
-                default: false
+            comConnection: {
+                type: 'object',
+                properties: {
+                    use: {
+                        type: 'boolean',
+                        default: false
+                    },
+                    connectionString: {
+                        type: 'string',
+                        default: ''
+                    }
+                }
             },
-            logMode: {
-                type: 'number',
-                default: 1
-            }
-        }
-    },
-    http1c: {
-        type: 'object',
-        properties: {
-            use: {
-                type: 'boolean',
-                default: false
-            },
-            connectionString: {
-                type: 'string',
-                default: ''
-            },
-            userName: {
-                type: 'string',
-                default: ''
-            },
-            password: {
-                type: 'string',
-                default: ''
-            }
-        }
-    },
-    comConnection: {
-        type: 'object',
-        properties: {
-            use: {
-                type: 'boolean',
-                default: false
-            },
-            connectionString: {
-                type: 'string',
-                default: ''
-            }
-        }
-    },
-    lines: {
-        type: 'array',
-        items: {
-            type: 'object',
-            properties: {
-                lineNumber: {
-                    type: 'string'
-                },
-                login: {
-                    type: 'string'
-                },
-                password: {
-                    type: 'string'
-                },
-                guid: {
-                    type: 'string'
-                },
-                number: {
-                    type: 'string'
+            lines: {
+                type: 'array',
+                items: {
+                    type: 'object',
+                    properties: {
+                        lineNumber: {
+                            type: 'string'
+                        },
+                        login: {
+                            type: 'string'
+                        },
+                        password: {
+                            type: 'string'
+                        },
+                        guid: {
+                            type: 'string'
+                        },
+                        number: {
+                            type: 'string'
+                        }
+                    }
                 }
             }
-        }
-    }
-};
+        };
+    });
+}
 const migrations = {
     //migration to new schema
     '1.0.0': (store) => {
@@ -189,3 +194,26 @@ const migrations = {
         store.delete('HTTP1CPassword');
     }
 };
+function getInternalIP() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { networkInterfaces } = yield import('os');
+        const nets = networkInterfaces();
+        const results = Object.create(null); // Or just '{}', an empty object
+        for (const name of Object.keys(nets)) {
+            for (const net of nets[name]) {
+                // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+                // 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
+                const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4;
+                if (net.family === familyV4Value && !net.internal) {
+                    if (!results[name]) {
+                        results[name] = [];
+                    }
+                    results[name].push(net.address);
+                }
+            }
+        }
+        if (Object.keys(results).length) {
+            return results[Object.keys(results)[0]][0];
+        }
+    });
+}
