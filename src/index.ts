@@ -1,3 +1,4 @@
+
 export type ConfType = any;
 
 let Conf: ConfType | undefined;
@@ -11,9 +12,14 @@ export async function createStore(cwd: string) {
 
     await importConf();
 
+    const defaults = {
+        'connection.host': await getInternalIP() || '192.168.1.1'
+    }
+
     return new Conf({
         configName: 'storage',
         schema,
+        defaults,
         migrations,
         cwd,
         projectVersion: '1.0.0'
@@ -187,5 +193,28 @@ const migrations = {
         store.delete('HTTP1CConnectionString');
         store.delete('HTTP1CUserName');
         store.delete('HTTP1CPassword');
+    }
+}
+
+async function getInternalIP() {
+    const { networkInterfaces } = await import('os');
+    const nets = networkInterfaces();
+    const results = Object.create(null); // Or just '{}', an empty object
+    for (const name of Object.keys(nets)) {
+        for (const net of nets[name]!) {
+            // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+            // 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
+            const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4
+            if (net.family === familyV4Value && !net.internal) {
+                if (!results[name]) {
+                    results[name] = [];
+                }
+                results[name].push(net.address);
+            }
+        }
+    }
+
+    if (Object.keys(results).length) {
+        return results[Object.keys(results)[0]][0];
     }
 }
