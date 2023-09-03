@@ -8,10 +8,12 @@ async function importConf() {
     }
 }
 
+import { networkInterfaces } from 'os';
+
 export async function createStore(cwd: string) {
 
     await importConf();
-    const schema = await getSchema();
+    const schema = getSchema();
 
     return new Conf({
         configName: 'storage',
@@ -22,14 +24,14 @@ export async function createStore(cwd: string) {
     });
 }
 
-async function getSchema() {
+function getSchema() {
     return {
         connection: {
             type: 'object',
             properties: {
                 host: {
                     type: 'string',
-                    default: await getInternalIP() || '192.168.1.1',
+                    default: getInternalIP() || '192.168.1.1',
                 },
                 port: {
                     type: 'number',
@@ -131,8 +133,6 @@ async function getSchema() {
     }
 }
 
-
-
 const migrations = {
     //migration to new schema
     '1.0.0': (store: ConfType) => {
@@ -196,8 +196,7 @@ const migrations = {
     }
 }
 
-async function getInternalIP() {
-    const { networkInterfaces } = await import('os');
+function getInternalIP() {
     const nets = networkInterfaces();
     const results = Object.create(null); // Or just '{}', an empty object
     for (const name of Object.keys(nets)) {

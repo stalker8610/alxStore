@@ -15,10 +15,17 @@ function importConf() {
         }
     });
 }
+/* let networkInterfaces: any;
+async function importOs() {
+    networkInterfaces = (await import('os')).networkInterfaces;
+} */
+/* import Conf from 'Conf'; */
+import { networkInterfaces } from 'os';
 export function createStore(cwd) {
     return __awaiter(this, void 0, void 0, function* () {
         yield importConf();
-        const schema = yield getSchema();
+        /*  await importOs(); */
+        const schema = getSchema();
         return new Conf({
             configName: 'storage',
             schema,
@@ -29,114 +36,112 @@ export function createStore(cwd) {
     });
 }
 function getSchema() {
-    return __awaiter(this, void 0, void 0, function* () {
-        return {
-            connection: {
+    return {
+        connection: {
+            type: 'object',
+            properties: {
+                host: {
+                    type: 'string',
+                    default: getInternalIP() || '192.168.1.1',
+                },
+                port: {
+                    type: 'number',
+                    default: 8081
+                },
+                webSocketPort: {
+                    type: 'number',
+                    default: 8082
+                },
+                password: {
+                    type: 'string',
+                    default: '1234'
+                }
+            }
+        },
+        mango: {
+            type: 'object',
+            properties: {
+                apiKey: {
+                    type: 'string',
+                    default: ''
+                },
+                apiSalt: {
+                    type: 'string',
+                    default: ''
+                }
+            }
+        },
+        preferences: {
+            type: 'object',
+            properties: {
+                showRegionOperator: {
+                    type: 'boolean',
+                    default: false
+                },
+                logMode: {
+                    type: 'number',
+                    default: 1
+                }
+            }
+        },
+        http1c: {
+            type: 'object',
+            properties: {
+                use: {
+                    type: 'boolean',
+                    default: false
+                },
+                connectionString: {
+                    type: 'string',
+                    default: ''
+                },
+                userName: {
+                    type: 'string',
+                    default: ''
+                },
+                password: {
+                    type: 'string',
+                    default: ''
+                }
+            }
+        },
+        comConnection: {
+            type: 'object',
+            properties: {
+                use: {
+                    type: 'boolean',
+                    default: false
+                },
+                connectionString: {
+                    type: 'string',
+                    default: ''
+                }
+            }
+        },
+        lines: {
+            type: 'array',
+            items: {
                 type: 'object',
                 properties: {
-                    host: {
-                        type: 'string',
-                        default: (yield getInternalIP()) || '192.168.1.1',
+                    lineNumber: {
+                        type: 'string'
                     },
-                    port: {
-                        type: 'number',
-                        default: 8081
-                    },
-                    webSocketPort: {
-                        type: 'number',
-                        default: 8082
+                    login: {
+                        type: 'string'
                     },
                     password: {
-                        type: 'string',
-                        default: '1234'
-                    }
-                }
-            },
-            mango: {
-                type: 'object',
-                properties: {
-                    apiKey: {
-                        type: 'string',
-                        default: ''
+                        type: 'string'
                     },
-                    apiSalt: {
-                        type: 'string',
-                        default: ''
-                    }
-                }
-            },
-            preferences: {
-                type: 'object',
-                properties: {
-                    showRegionOperator: {
-                        type: 'boolean',
-                        default: false
+                    guid: {
+                        type: 'string'
                     },
-                    logMode: {
-                        type: 'number',
-                        default: 1
-                    }
-                }
-            },
-            http1c: {
-                type: 'object',
-                properties: {
-                    use: {
-                        type: 'boolean',
-                        default: false
-                    },
-                    connectionString: {
-                        type: 'string',
-                        default: ''
-                    },
-                    userName: {
-                        type: 'string',
-                        default: ''
-                    },
-                    password: {
-                        type: 'string',
-                        default: ''
-                    }
-                }
-            },
-            comConnection: {
-                type: 'object',
-                properties: {
-                    use: {
-                        type: 'boolean',
-                        default: false
-                    },
-                    connectionString: {
-                        type: 'string',
-                        default: ''
-                    }
-                }
-            },
-            lines: {
-                type: 'array',
-                items: {
-                    type: 'object',
-                    properties: {
-                        lineNumber: {
-                            type: 'string'
-                        },
-                        login: {
-                            type: 'string'
-                        },
-                        password: {
-                            type: 'string'
-                        },
-                        guid: {
-                            type: 'string'
-                        },
-                        number: {
-                            type: 'string'
-                        }
+                    number: {
+                        type: 'string'
                     }
                 }
             }
-        };
-    });
+        }
+    };
 }
 const migrations = {
     //migration to new schema
@@ -195,25 +200,22 @@ const migrations = {
     }
 };
 function getInternalIP() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { networkInterfaces } = yield import('os');
-        const nets = networkInterfaces();
-        const results = Object.create(null); // Or just '{}', an empty object
-        for (const name of Object.keys(nets)) {
-            for (const net of nets[name]) {
-                // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
-                // 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
-                const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4;
-                if (net.family === familyV4Value && !net.internal) {
-                    if (!results[name]) {
-                        results[name] = [];
-                    }
-                    results[name].push(net.address);
+    const nets = networkInterfaces();
+    const results = Object.create(null); // Or just '{}', an empty object
+    for (const name of Object.keys(nets)) {
+        for (const net of nets[name]) {
+            // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+            // 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
+            const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4;
+            if (net.family === familyV4Value && !net.internal) {
+                if (!results[name]) {
+                    results[name] = [];
                 }
+                results[name].push(net.address);
             }
         }
-        if (Object.keys(results).length) {
-            return results[Object.keys(results)[0]][0];
-        }
-    });
+    }
+    if (Object.keys(results).length) {
+        return results[Object.keys(results)[0]][0];
+    }
 }
