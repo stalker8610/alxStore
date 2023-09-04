@@ -15,16 +15,12 @@ function importConf() {
         }
     });
 }
-/* let networkInterfaces: any;
-async function importOs() {
-    networkInterfaces = (await import('os')).networkInterfaces;
-} */
-/* import Conf from 'Conf'; */
 import { networkInterfaces } from 'os';
+import * as generatePassword from 'password-generator';
+const fGeneratePassword = typeof generatePassword === 'object' ? generatePassword.default : generatePassword;
 export function createStore(cwd) {
     return __awaiter(this, void 0, void 0, function* () {
         yield importConf();
-        /*  await importOs(); */
         const schema = getSchema();
         return new Conf({
             configName: 'storage',
@@ -54,7 +50,7 @@ function getSchema() {
                 },
                 password: {
                     type: 'string',
-                    default: '1234'
+                    default: fGeneratePassword(8, false)
                 }
             }
         },

@@ -9,6 +9,8 @@ async function importConf() {
 }
 
 import { networkInterfaces } from 'os';
+import * as generatePassword from 'password-generator';
+const fGeneratePassword = typeof generatePassword === 'object' ? (generatePassword as any).default : generatePassword;
 
 export async function createStore(cwd: string) {
 
@@ -43,7 +45,7 @@ function getSchema() {
                 },
                 password: {
                     type: 'string',
-                    default: '1234'
+                    default: fGeneratePassword(8, false)
                 }
             }
         },

@@ -1,6 +1,6 @@
 {
   "name": "alxstore",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "description": "Store for ALXPHONESERVERSCRIPT and ALXPHONESERVER",
   "type": "module",
   "scripts": {
@@ -11,7 +11,8 @@
   "author": "Voronin Anton <stalker8610@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "conf": "^11.0.2"
+    "conf": "^11.0.2",
+    "password-generator": "^2.3.2"
   },
   "devDependencies": {
     "@types/node": "^20.4.8",
