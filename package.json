@@ -1,9 +1,10 @@
 {
   "name": "alxstore",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Store for ALXPHONESERVERSCRIPT and ALXPHONESERVER",
   "type": "module",
   "scripts": {
+    "postinstall": "patch-package",
     "build": "npm run build:clean && tsc --build --force ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json && node ./src/prepare-package-json.js",
     "build:clean": "if exist \"./dist\" rd \"./dist\" /s /q",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.4.8",
+    "patch-package": "^8.0.0",
     "typescript": "^5.1.6"
   },
   "exports": {

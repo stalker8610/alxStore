@@ -1,0 +1,12 @@
+diff --git a/node_modules/conf/dist/source/index.js b/node_modules/conf/dist/source/index.js
+index 95d80e3..29673b7 100644
+--- a/node_modules/conf/dist/source/index.js
++++ b/node_modules/conf/dist/source/index.js
+@@ -98,6 +98,7 @@ export default class Conf {
+             const ajv = new Ajv({
+                 allErrors: true,
+                 useDefaults: true,
++                coerceTypes: true
+             });
+             ajvFormats(ajv);
+             const schema = {

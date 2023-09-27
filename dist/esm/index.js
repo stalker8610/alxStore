@@ -142,7 +142,6 @@ function getSchema() {
 const migrations = {
     //migration to new schema
     '1.0.0': (store) => {
-        var _a;
         store.set({
             connection: {
                 host: store.get('host'),
@@ -177,7 +176,6 @@ const migrations = {
                 connectionString: store.get('v83ComDbConnectString')
             }
         });
-        store.set('lines', ((_a = store.get('lines')) === null || _a === void 0 ? void 0 : _a.map(line => (Object.assign(Object.assign({}, line), { lineNumber: String(line.lineNumber) })))) || []);
         store.delete('version');
         store.delete('host');
         store.delete('httpPort');

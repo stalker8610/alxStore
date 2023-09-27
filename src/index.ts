@@ -178,8 +178,6 @@ const migrations = {
             }
         });
 
-        store.set('lines', (store.get('lines') as Array<{ lineNumber: 'number' }>)?.map(line => ({ ...line, lineNumber: String(line.lineNumber) })) || []);
-
         store.delete('version');
         store.delete('host');
         store.delete('httpPort');
