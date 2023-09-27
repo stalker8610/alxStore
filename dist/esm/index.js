@@ -11,7 +11,7 @@ let Conf;
 function importConf() {
     return __awaiter(this, void 0, void 0, function* () {
         if (Conf === undefined) {
-            Conf = (yield import('Conf')).default;
+            Conf = (yield import('conf')).default;
         }
     });
 }

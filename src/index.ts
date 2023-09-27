@@ -4,7 +4,7 @@ export type ConfType = any;
 let Conf: ConfType | undefined;
 async function importConf() {
     if (Conf === undefined) {
-        Conf = (await import('Conf')).default;
+        Conf = (await import('conf')).default;
     }
 }
 

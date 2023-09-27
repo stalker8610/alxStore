@@ -6,9 +6,6 @@
         "strict": true,
         "module": "Node16",
         "moduleResolution": "Node16",
-        "target": "ES2015",
-        "paths": {
-            "conf": ["conf/dist/source"]
-        }
+        "target": "ES2015"
     }
 }
