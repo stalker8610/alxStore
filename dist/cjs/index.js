@@ -30,7 +30,7 @@ function createStore(cwd) {
             schema,
             migrations,
             cwd,
-            projectVersion: '1.0.0'
+            projectVersion: '2.0.0'
         });
     });
 }
@@ -58,7 +58,52 @@ function getSchema() {
                 }
             }
         },
-        mango: {
+        provider: {
+            type: 'object',
+            oneOf: [
+                {
+                    properties: {
+                        name: { const: 'mango' },
+                        settings: {
+                            type: 'object',
+                            properties: {
+                                apiKey: {
+                                    type: 'string',
+                                    //default: ''
+                                },
+                                apiSalt: {
+                                    type: 'string',
+                                    //default: ''
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    properties: {
+                        name: { const: 'rt' },
+                        settings: {
+                            type: 'object',
+                            properties: {
+                                url: {
+                                    type: 'string',
+                                    //default: ''
+                                },
+                                xClientId: {
+                                    type: 'string',
+                                    //default: ''
+                                },
+                                xClientSign: {
+                                    type: 'string',
+                                    //default: ''
+                                }
+                            }
+                        }
+                    }
+                },
+            ]
+        },
+        /* mango: {
             type: 'object',
             properties: {
                 apiKey: {
@@ -70,7 +115,7 @@ function getSchema() {
                     default: ''
                 }
             }
-        },
+        }, */
         preferences: {
             type: 'object',
             properties: {
@@ -144,7 +189,7 @@ function getSchema() {
     };
 }
 const migrations = {
-    //migration to new schema
+    /* initial */
     '1.0.0': (store) => {
         var _a;
         store.set({
@@ -197,6 +242,15 @@ const migrations = {
         store.delete('HTTP1CConnectionString');
         store.delete('HTTP1CUserName');
         store.delete('HTTP1CPassword');
+    },
+    /* providers */
+    '2.0.0': (store) => {
+        const mangoSettings = store.get('mango');
+        store.set('provider', {
+            name: 'mango',
+            settings: mangoSettings
+        });
+        store.delete('mango');
     }
 };
 function getInternalIP() {

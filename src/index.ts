@@ -22,7 +22,7 @@ export async function createStore(cwd: string) {
         schema,
         migrations,
         cwd,
-        projectVersion: '1.0.0'
+        projectVersion: '2.0.0'
     });
 }
 
@@ -49,18 +49,36 @@ function getSchema() {
                 }
             }
         },
-        mango: {
+
+        provider: {
             type: 'object',
-            properties: {
-                apiKey: {
-                    type: 'string',
-                    default: ''
+            oneOf: [
+                {
+                    properties: {
+                        name: { const: 'mango' },
+                        settings: {
+                            type: 'object',
+                            properties: {
+                                apiKey: { type: 'string' },
+                                apiSalt: { type: 'string' }
+                            }
+                        }
+                    }
                 },
-                apiSalt: {
-                    type: 'string',
-                    default: ''
-                }
-            }
+                {
+                    properties: {
+                        name: { const: 'rt' },
+                        settings: {
+                            type: 'object',
+                            properties: {
+                                url: { type: 'string' },
+                                xClientId: { type: 'string' },
+                                xClientSign: { type: 'string' }
+                            }
+                        }
+                    }
+                },
+            ]
         },
         preferences: {
             type: 'object',
@@ -114,21 +132,11 @@ function getSchema() {
             items: {
                 type: 'object',
                 properties: {
-                    lineNumber: {
-                        type: ['string', 'number']
-                    },
-                    login: {
-                        type: 'string'
-                    },
-                    password: {
-                        type: 'string'
-                    },
-                    guid: {
-                        type: 'string'
-                    },
-                    number: {
-                        type: 'string'
-                    }
+                    lineNumber: { type: ['string', 'number'] },
+                    login: { type: 'string' },
+                    password: { type: 'string' },
+                    guid: { type: 'string' },
+                    number: { type: 'string' }
                 }
             }
         }
@@ -136,7 +144,7 @@ function getSchema() {
 }
 
 const migrations = {
-    //migration to new schema
+    /* initial */
     '1.0.0': (store: ConfType) => {
         store.set({
             connection: {
@@ -160,7 +168,6 @@ const migrations = {
                 logMode: store.get('logMode')
             }
         });
-
 
         store.set({
             http1c: {
@@ -195,6 +202,15 @@ const migrations = {
         store.delete('HTTP1CConnectionString');
         store.delete('HTTP1CUserName');
         store.delete('HTTP1CPassword');
+    },
+    /* provider */
+    '2.0.0': (store: ConfType) => {
+        const mangoSettings = store.get('mango');
+        store.set('provider', {
+            name: 'mango',
+            settings: mangoSettings
+        })
+        store.delete('mango');
     }
 }
 
