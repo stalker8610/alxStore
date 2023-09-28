@@ -115,7 +115,7 @@ function getSchema() {
                 type: 'object',
                 properties: {
                     lineNumber: {
-                        type: 'string'
+                        type: ['string', 'number']
                     },
                     login: {
                         type: 'string'
@@ -177,6 +177,8 @@ const migrations = {
                 connectionString: store.get('v83ComDbConnectString')
             }
         });
+
+        store.set('lines', (store.get('lines') as Array<{ lineNumber: 'number' }>)?.map(line => ({ ...line, lineNumber: String(line.lineNumber) })) || []);
 
         store.delete('version');
         store.delete('host');
