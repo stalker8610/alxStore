@@ -67,14 +67,8 @@ function getSchema() {
                         settings: {
                             type: 'object',
                             properties: {
-                                apiKey: {
-                                    type: 'string',
-                                    //default: ''
-                                },
-                                apiSalt: {
-                                    type: 'string',
-                                    //default: ''
-                                }
+                                apiKey: { type: 'string' },
+                                apiSalt: { type: 'string' }
                             }
                         }
                     }
@@ -85,43 +79,24 @@ function getSchema() {
                         settings: {
                             type: 'object',
                             properties: {
-                                url: {
-                                    type: 'string',
-                                    //default: ''
-                                },
-                                xClientId: {
-                                    type: 'string',
-                                    //default: ''
-                                },
-                                xClientSign: {
-                                    type: 'string',
-                                    //default: ''
-                                }
+                                url: { type: 'string' },
+                                xClientId: { type: 'string' },
+                                xClientSign: { type: 'string' }
                             }
                         }
                     }
                 },
             ]
         },
-        /* mango: {
-            type: 'object',
-            properties: {
-                apiKey: {
-                    type: 'string',
-                    default: ''
-                },
-                apiSalt: {
-                    type: 'string',
-                    default: ''
-                }
-            }
-        }, */
         preferences: {
             type: 'object',
             properties: {
                 showRegionOperator: {
                     type: 'boolean',
                     default: false
+                },
+                routeCalls: {
+                    type: 'boolean'
                 },
                 logMode: {
                     type: 'number',
@@ -168,21 +143,11 @@ function getSchema() {
             items: {
                 type: 'object',
                 properties: {
-                    lineNumber: {
-                        type: ['string', 'number']
-                    },
-                    login: {
-                        type: 'string'
-                    },
-                    password: {
-                        type: 'string'
-                    },
-                    guid: {
-                        type: 'string'
-                    },
-                    number: {
-                        type: 'string'
-                    }
+                    lineNumber: { type: ['string', 'number'] },
+                    login: { type: 'string' },
+                    password: { type: 'string' },
+                    guid: { type: 'string' },
+                    number: { type: 'string' }
                 }
             }
         }
@@ -243,7 +208,7 @@ const migrations = {
         store.delete('HTTP1CUserName');
         store.delete('HTTP1CPassword');
     },
-    /* providers */
+    /* provider */
     '2.0.0': (store) => {
         const mangoSettings = store.get('mango');
         store.set('provider', {

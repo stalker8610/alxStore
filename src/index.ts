@@ -87,6 +87,9 @@ function getSchema() {
                     type: 'boolean',
                     default: false
                 },
+                routeCalls: {
+                    type: 'boolean'
+                },
                 logMode: {
                     type: 'number',
                     default: 1
