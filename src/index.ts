@@ -214,6 +214,8 @@ const migrations = {
             settings: mangoSettings
         })
         store.delete('mango');
+
+        store.set('preferences.routeCalls', false);
     }
 }
 
