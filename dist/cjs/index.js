@@ -30,7 +30,7 @@ function createStore(cwd) {
             schema,
             migrations,
             cwd,
-            projectVersion: '2.0.0'
+            projectVersion: '1.5.3'
         });
     });
 }
@@ -209,7 +209,7 @@ const migrations = {
         store.delete('HTTP1CPassword');
     },
     /* provider */
-    '2.0.0': (store) => {
+    '1.5.3': (store) => {
         const mangoSettings = store.get('mango');
         store.set('provider', {
             name: 'mango',
