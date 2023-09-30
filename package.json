@@ -1,6 +1,6 @@
 {
   "name": "alxstore",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "Store for ALXPHONESERVERSCRIPT and ALXPHONESERVER",
   "type": "module",
   "scripts": {

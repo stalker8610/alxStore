@@ -67,8 +67,8 @@ function getSchema() {
                         settings: {
                             type: 'object',
                             properties: {
-                                apiKey: { type: 'string' },
-                                apiSalt: { type: 'string' }
+                                apiKey: { type: 'string', default: '' },
+                                apiSalt: { type: 'string', default: '' }
                             }
                         }
                     }
@@ -79,9 +79,9 @@ function getSchema() {
                         settings: {
                             type: 'object',
                             properties: {
-                                url: { type: 'string' },
-                                xClientId: { type: 'string' },
-                                xClientSign: { type: 'string' }
+                                url: { type: 'string', default: '' },
+                                xClientId: { type: 'string', default: '' },
+                                xClientSign: { type: 'string', default: '' }
                             }
                         }
                     }
@@ -96,7 +96,8 @@ function getSchema() {
                     default: false
                 },
                 routeCalls: {
-                    type: 'boolean'
+                    type: 'boolean',
+                    default: false
                 },
                 logMode: {
                     type: 'number',
@@ -209,7 +210,7 @@ const migrations = {
         store.delete('HTTP1CPassword');
     },
     /* provider */
-    '1.5.3': (store) => {
+    '1.5.5': (store) => {
         const mangoSettings = store.get('mango');
         store.set('provider', {
             name: 'mango',
