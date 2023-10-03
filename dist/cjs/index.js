@@ -30,7 +30,7 @@ function createStore(cwd) {
             schema,
             migrations,
             cwd,
-            projectVersion: '1.5.3'
+            projectVersion: '1.5.8'
         });
     });
 }
@@ -67,8 +67,8 @@ function getSchema() {
                         settings: {
                             type: 'object',
                             properties: {
-                                apiKey: { type: 'string', default: '' },
-                                apiSalt: { type: 'string', default: '' }
+                                apiKey: { type: 'string' },
+                                apiSalt: { type: 'string' }
                             }
                         }
                     }
@@ -79,9 +79,9 @@ function getSchema() {
                         settings: {
                             type: 'object',
                             properties: {
-                                url: { type: 'string', default: '' },
-                                xClientId: { type: 'string', default: '' },
-                                xClientSign: { type: 'string', default: '' }
+                                url: { type: 'string' },
+                                xClientId: { type: 'string' },
+                                xClientSign: { type: 'string' }
                             }
                         }
                     }
@@ -210,7 +210,7 @@ const migrations = {
         store.delete('HTTP1CPassword');
     },
     /* provider */
-    '1.5.5': (store) => {
+    '1.5.8': (store) => {
         const mangoSettings = store.get('mango');
         store.set('provider', {
             name: 'mango',
